@@ -1,4 +1,4 @@
-# Flow Diagrams
+# Flow Fields
 
 ![Animated gif](./Images/video.gif)
 
