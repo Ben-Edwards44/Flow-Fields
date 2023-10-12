@@ -22,8 +22,6 @@ FIELD_SPEED = 12
 SCREEN_X = 800
 SCREEN_Y = 800
 
-CONSERVE_COLOUR = True
-
 
 pygame.init()
 pygame.display.set_caption("Flow fields")
@@ -72,31 +70,10 @@ def create_particles(num):
     return particles
 
 
-def evaporate_colour(colour):
-    bin_num = bin(colour)[2:]
-
-    while len(bin_num) < 24:
-        bin_num = f"0{bin_num}"
-
-    new_num = ""
-    for i in range(3):
-        current_num = int(bin_num[i : (i + 1) * 3])
-        current_num *= EVAPORATE_RATE
-        new_num = f"{new_num}{bin(current_num[2:])}"
-
-    return int(new_num)
-
-
-
-def draw(particles):
+def draw():
     global screen_array
 
-    if CONSERVE_COLOUR:
-        for i in range(len(screen_array)):
-            for x in range(len(screen_array[i])):
-                screen_array[i][x] = evaporate_colour(screen_array[i][x])
-    else:
-        screen_array *= EVAPORATE_RATE
+    screen_array *= EVAPORATE_RATE
 
     pygame.surfarray.blit_array(window, screen_array)
     pygame.display.update()
@@ -110,6 +87,12 @@ def update_particles(particles, vectors):
         i.main()
 
         x, y = i.pos()
+
+        if x > SCREEN_X - 1:
+            x = SCREEN_X - 1
+        if y > SCREEN_Y - 1:
+            y = SCREEN_Y - 1
+
         screen_array[x][y] = PARTICLE_COLOUR
 
 
@@ -128,7 +111,7 @@ def main():
         inx += 1
 
         update_particles(particles, vectors)
-        draw(particles)
+        draw()
 
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
